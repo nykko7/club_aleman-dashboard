@@ -23,6 +23,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2 } from 'lucide-react';
 import { z } from 'zod';
 import { MediaItem, mediaItemSchema, mediaItemTypes } from '@/db/schema';
+import { UploadButton } from "@/lib/uploadthing";
+
 
 export type MediaItemFormValues = z.infer<typeof mediaItemSchema>;
 
@@ -66,7 +68,20 @@ export function MediaItemForm({
 						</FormItem>
 					)}
 				/>
-				<FormField
+				{
+					form.getValues('url') !== '' ?  <img src={form.getValues('url')} width={300} height={300} alt='Imagen' /> : <UploadButton
+					endpoint="imageUploader"
+					onClientUploadComplete={(res) => {
+						form.setValue('url', res[0].url)
+					}}
+					onUploadError={(error: Error) => {
+					// Do something with the error.
+					alert(`ERROR! ${error.message}`);
+					}}
+				/>
+
+				}
+				{/* <FormField
 					control={form.control}
 					name='url'
 					render={({ field }) => (
@@ -78,7 +93,7 @@ export function MediaItemForm({
 							<FormMessage />
 						</FormItem>
 					)}
-				/>
+				/> */}
 				<FormField
 					control={form.control}
 					name='description'
